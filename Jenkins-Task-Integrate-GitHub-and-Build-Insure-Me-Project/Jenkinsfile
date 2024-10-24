@@ -5,20 +5,18 @@ pipeline {
     stages {
         stage('Code-Checkout') {
             steps {
-              git branch: 'main', changelog: false, poll: false, url: 'https://github.com/Gaurav1251/Insure_me'
+              git branch: 'main', changelog: false, poll: false, url: 'https://github.com/Gaurav1251/Jenkins_Tasks'
             }
         }
-        
         stage('Code-Build') {
             steps {
-               sh 'mvn clean package'
+               sh 'cd Jenkins-Task-Integrate-GitHub-and-Build-Insure-Me-Project/ && mvn clean package'
             }
         }
-        
         stage('Containerize the application'){
             steps { 
                echo 'Creating Docker image'
-               sh "docker build -t insure ."
+               sh "cd Jenkins-Task-Integrate-GitHub-and-Build-Insure-Me-Project && docker build -t insure ."
             }
         }
         stage('Deploy'){
@@ -32,4 +30,3 @@ pipeline {
     
    }
 }
-
