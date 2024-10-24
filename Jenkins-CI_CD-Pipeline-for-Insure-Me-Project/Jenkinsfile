@@ -5,24 +5,38 @@ pipeline {
     stages {
         stage('Code-Checkout') {
             steps {
-              git branch: 'main', changelog: false, poll: false, url: 'https://github.com/Gaurav1251/Jenkins_Tasks'
+              checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'cicd', url: 'https://github.com/Gaurav1251/Jenkins_Tasks']])
             }
         }
         stage('Code-Build') {
             steps {
-               sh 'cd Jenkins-Task-Integrate-GitHub-and-Build-Insure-Me-Project/ && mvn clean package'
+               sh 'cd Jenkins-CI_CD-Pipeline-for-Insure-Me-Project && mvn clean package'
             }
         }
         stage('Containerize the application'){
             steps { 
                echo 'Creating Docker image'
-               sh "cd Jenkins-Task-Integrate-GitHub-and-Build-Insure-Me-Project && docker build -t insure ."
+               sh "cd Jenkins-CI_CD-Pipeline-for-Insure-Me-Project && docker build -t gaurav1251/insure:v1 ."
             }
         }
+        
+        stage('push'){
+           steps {
+               withCredentials([usernamePassword(credentialsId: 'push', passwordVariable: 'p', usernameVariable: 'u')]) {
+    // some block
+    
+                    sh "docker login -u ${env.u} -p ${env.p}"
+                }
+               
+           } 
+            
+        }
+            
+        
         stage('Deploy'){
             
             steps {
-                sh 'docker run -d -p 8089:8081 insure'
+                sh 'docker run -d -p 8089:8081 gaurav1251/insure:v1'
             }
         }
             
