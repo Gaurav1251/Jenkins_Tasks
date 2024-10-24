@@ -26,6 +26,7 @@ pipeline {
     // some block
     
                     sh "docker login -u ${env.u} -p ${env.p}"
+                    sh 'docker push gaurav1251/insure:v1
                 }
                
            } 
